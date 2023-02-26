@@ -4,6 +4,8 @@ using namespace std;
 class Fraction;
 Fraction operator*(Fraction left, Fraction right);
 Fraction operator/(const Fraction& left, const Fraction& right); 
+Fraction operator-(Fraction left, Fraction right);
+Fraction operator+(Fraction left, Fraction right);
 
 class Fraction
 {
@@ -110,10 +112,14 @@ public:
 	{
 		return *this = *this / other;
 	}
-	/*Fraction& operator-=(const Fraction& other)
+	Fraction& operator-=(const Fraction& other)
 	{
 		return *this = *this - other;
-	}*///????????????
+	}
+	Fraction& operator+=(const Fraction& other)
+	{
+		return *this = *this + other;
+	}
 
 	//							Type-cast operators
 	explicit operator int()const
@@ -332,12 +338,12 @@ std::istream& operator>>(std::istream& is, Fraction& obj)
 /////////////////////////////////////////////////////////////////////////////////////
 
 //#define CONSTRUCTORS_CHECK
-//#define ARITHMETICAL_OPERATORS_CHECK
+#define ARITHMETICAL_OPERATORS_CHECK
 //#define COMPARISON_OPERATORS
 //#define CONVERSION_FROM_OTHER_TO_CLASS
 //#define CONVERSION_FROM_CLASS_TO_OTHER
 //#define HOMEWORK_1
-#define HOMEWORK_2
+//#define HOMEWORK_2
 
 
 void main()
@@ -381,7 +387,7 @@ void main()
 
 	A *= B;
 	A /= B;
-	//A -= B;
+	A -= B;
 	A.Print();
 
 #endif
