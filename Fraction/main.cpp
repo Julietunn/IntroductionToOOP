@@ -1,4 +1,5 @@
-﻿#include<iostream>
+﻿#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
 using namespace std;
 
 class Fraction;
@@ -34,7 +35,7 @@ public:
 	{
 		this->numerator = numerator;
 	}
-	void set_denominator(int denominator)
+	void set_denominator(int denominator)				//фильтрация данных, так как на ноль делить нельзя
 	{
 		if (denominator == 0)denominator = 1;
 		this->denominator = denominator;
@@ -44,7 +45,7 @@ public:
 	{
 		this->integer = integer;
 		this->numerator = numerator;
-		this->set_denominator(denominator);
+		this->set_denominator(denominator); //записываем через set, так как там была выполнена фильтрация данных
 		cout << "Constructor:\t\t" << this << endl;
 	}
 	Fraction()
@@ -60,7 +61,7 @@ public:
 		decimal -= integer;		//убираем целую часть из десятичной дроби 
 		this->denominator = 1e+9;
 		this->numerator = decimal * denominator; 
-		reduce;
+		reduce();
 		cout << "DConstructor:\t" << this << endl; 
 	}
 	explicit Fraction(int integer)
@@ -120,6 +121,28 @@ public:
 	{
 		return *this = *this + other;
 	}
+	Fraction& operator++()
+	{
+		integer++;
+		return *this;
+	}
+	Fraction operator++(int)
+	{
+		Fraction old = *this;
+		integer++;
+		return old;
+	}
+	Fraction& operator--()
+	{
+		integer--;
+		return *this;
+	}
+	Fraction operator--(int)
+	{
+		Fraction old = *this;
+		integer--;
+		return old;
+	}
 
 	//							Type-cast operators
 	explicit operator int()const
@@ -132,6 +155,18 @@ public:
 		return integer + (double)numerator / denominator;
 	}
 	//						Methods
+	/*void Print()const
+	{
+		if (integer) cout << integer;
+		if (numerator)
+		{
+			if (integer) cout << "(";
+			cout << numerator << "/" << denominator;
+			if (integer) cout << ")";
+		}
+		else if (integer == 0) cout << 0;
+		cout << endl;
+	}*/
 	Fraction& to_improper()
 	{
 		numerator += integer * denominator;
@@ -168,7 +203,7 @@ public:
 		denominator /= GCD;
 		return *this;
 	}
-	std::ostream& print(std::ostream& os)const
+	std::ostream& Print(std::ostream& os)const
 	{
 		if (integer)os << integer;
 		if (numerator)
@@ -295,7 +330,7 @@ bool operator<=(const Fraction& left, const Fraction& right)
 //////////////////////////////////////////////////////////////////////////////////////
 std::ostream& operator<<(std::ostream& os, const Fraction& obj)
 {
-	return obj.print(os);
+	return obj.Print(os);
 }
 std::istream& operator>>(std::istream& is, Fraction& obj)
 {
@@ -320,7 +355,7 @@ std::istream& operator>>(std::istream& is, Fraction& obj)
 	is.getline(buffer, SIZE);
 
 	int n = 0;	//счетчик чисел в веденной строке
-	for (char* pch = strtok(buffer, delimiters); pch; pch = strtok(NULL, delimiters))
+	for (char* pch =  strtok(buffer, delimiters); pch; pch = strtok(NULL, delimiters))
 		number[n++] = atoi(pch);	//функция atoi(...) ASCII-string to integer преобразует строку в число, если строка является числом, т.е., содержит цифры.
 
 	switch (n)
@@ -338,12 +373,12 @@ std::istream& operator>>(std::istream& is, Fraction& obj)
 /////////////////////////////////////////////////////////////////////////////////////
 
 //#define CONSTRUCTORS_CHECK
-#define ARITHMETICAL_OPERATORS_CHECK
+//#define ARITHMETICAL_OPERATORS_CHECK
 //#define COMPARISON_OPERATORS
 //#define CONVERSION_FROM_OTHER_TO_CLASS
 //#define CONVERSION_FROM_CLASS_TO_OTHER
 //#define HOMEWORK_1
-//#define HOMEWORK_2
+#define HOMEWORK_2
 
 
 void main()
@@ -367,10 +402,10 @@ void main()
 #endif
 
 #ifdef ARITHMETICAL_OPERATORS_CHECK
-	Fraction A(8, 9);
+	Fraction A(2,3 4);
 	//A.Print();
 
-	Fraction B(8, 10);
+	Fraction B(3,4,5);
 	B.Print();
 
 	Fraction C = A * B;
@@ -388,6 +423,7 @@ void main()
 	A *= B;
 	A /= B;
 	A -= B;
+	A += B;
 	A.Print();
 
 #endif
@@ -397,8 +433,8 @@ void main()
 	cout << (Fraction(1, 2) > Fraction(5, 10)) << endl; 
 
 #endif
-	Fraction A(2, 3, 4);
-	cout << A << endl; 
+	/*Fraction A(2, 3, 4);
+	cout << A << endl; */
 
 #ifdef CONVERSION_FROM_OTHER_TO_CLASS
 
@@ -413,7 +449,7 @@ void main()
 #ifdef CONVERSION_FROM_CLASS_TO_OTHER
 	Fraction A(2, 3, 4);
 	A.Print();
-	int a = A; 
+	int a = (int)A; 
 
 	cout << a << endl; 
 #endif
@@ -432,4 +468,6 @@ void main()
 
 	Fraction A;
 	cout << "Введите простую дробь: "; cin >> A;
+
+	cout << A--;
 }
