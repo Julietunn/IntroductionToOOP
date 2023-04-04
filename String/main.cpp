@@ -28,7 +28,7 @@ public:
 		//this->str = new char[size] {}; //создание 
 		cout << "DefConstructor:\t\t" << this << endl;
 	}
-	String(const char* str):size(strlen(str)+1), str(new char[size] {})
+	String(const char* str):String(strlen(str)+1)
 	{
 		//this->size = strlen(str) + 1; //strlen - возвращает кол-во символов без 0, то есть реальный объем равен strlen + 1
 		//this->str = new char[size] {};
@@ -37,7 +37,7 @@ public:
 
 		cout << "1ArgConstructor:\t" << this << endl; 
 	}
-	String(const String& other):size (other.size), str(new char[size]{})
+	String(const String& other):String(other.str)
 	{
 		//Deep copy 
 		//this->size = other.size; 
