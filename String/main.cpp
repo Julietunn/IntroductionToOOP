@@ -6,8 +6,8 @@ String operator+(const String& left, const String& right);
 
 class String
 {
-	int size; //размер строки в байтах
-	char* str;//адрес строки в динамической памяти 
+	int size;		//размер строки в байтах
+	char* str;		//адрес строки в динамической памяти 
 public:
 	int get_size()const
 	{
@@ -25,7 +25,7 @@ public:
 	explicit String(int size = 80)
 	{
 		this->size = size;
-		this->str = new char[size] {};
+		this->str = new char[size] {}; //создание 
 		cout << "DefConstructor:\t\t" << this << endl;
 	}
 	String(const char* str)
@@ -46,6 +46,15 @@ public:
 			this->str[i] = other.str[i];
 		cout << "CopyConstructor:\t" << this << endl;
 	}
+	String(String&& other) //R-value reference
+	{
+		//Shallow copy
+		this->size = other.size;
+		this->str = other.str;
+		other.size = 0;
+		other.str = nullptr;			//указатель на ноль
+		cout << "MoveConstructor:\t" << this << endl;
+	}
 	~String()
 	{
 		delete this->str;
@@ -61,6 +70,15 @@ public:
 		for (int i = 0; i < size; i++)
 			this->str[i] = other.str[i];
 		cout << "CopyAssignment:\t\t" << this << endl; 
+		return *this;
+	}
+	String& operator=(String&& other)
+	{
+		this->size = other.size;
+		this->str = other.str;
+		other.size = 0;
+		other.str = nullptr;
+		cout << "MoveAssignment:\t" << this << endl;
 		return *this;
 	}
 	char& operator[](int i)
@@ -101,10 +119,14 @@ String operator+(const String& left, const String& right)
 
 	return cat;
 }
+
+//#define BASE_CHECK
+
 void main()
 {
 	setlocale(LC_ALL, "");
 	
+#ifdef BASE_CHECK
 	/*String str1(5);
 	str1.Print();*/
 
@@ -124,4 +146,19 @@ void main()
 
 	str1 = str3;
 	cout << str1 << endl;*/
+
+	String str3 = str1 + str2;	//Move constructor
+	cout << str3 << endl;
+
+	String str4 = str3;			//Copy constructor
+#endif
+
+	String str1;				//Default C-R
+	String str2 = "Hello";		//1Arg C-R
+	String str3 = str2;			//Copy C-R
+	String str4();				//Without C-R (Function)
+	String str5{};
+	String str6{ 22 };
+	String str7{ "World" };
+	String str8{ str7 };
 }
