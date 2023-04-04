@@ -22,35 +22,35 @@ public:
 		return str;
 	}
 	//							Constructors:
-	explicit String(int size = 80)
+	explicit String(int size = 80):size(size), str(new char[size]{})
 	{
-		this->size = size;
-		this->str = new char[size] {}; //создание 
+		//this->size = size;
+		//this->str = new char[size] {}; //создание 
 		cout << "DefConstructor:\t\t" << this << endl;
 	}
-	String(const char* str)
+	String(const char* str):size(strlen(str)+1), str(new char[size] {})
 	{
-		this->size = strlen(str) + 1; //strlen - возвращает кол-во символов без 0, то есть реальный объем равен strlen + 1
-		this->str = new char[size] {};
+		//this->size = strlen(str) + 1; //strlen - возвращает кол-во символов без 0, то есть реальный объем равен strlen + 1
+		//this->str = new char[size] {};
 
 		for (int i = 0; i < size; i++)this->str[i] = str[i];
 
 		cout << "1ArgConstructor:\t" << this << endl; 
 	}
-	String(const String& other)
+	String(const String& other):size (other.size), str(new char[size]{})
 	{
 		//Deep copy 
-		this->size = other.size; 
-		this->str = new char[size] {};
+		//this->size = other.size; 
+		//this->str = new char[size] {};
 		for (int i = 0; i < size; i++)
 			this->str[i] = other.str[i];
 		cout << "CopyConstructor:\t" << this << endl;
 	}
-	String(String&& other) //R-value reference
+	String(String&& other)noexcept:size(other.size), str(other.str) //R-value reference
 	{
 		//Shallow copy
-		this->size = other.size;
-		this->str = other.str;
+		//this->size = other.size;
+		//this->str = other.str;
 		other.size = 0;
 		other.str = nullptr;			//указатель на ноль
 		cout << "MoveConstructor:\t" << this << endl;
@@ -120,15 +120,16 @@ String operator+(const String& left, const String& right)
 	return cat;
 }
 
-//#define BASE_CHECK
+#define BASE_CHECK
+//#define CALLING_CONSTRUCTORS
 
 void main()
 {
 	setlocale(LC_ALL, "");
 	
 #ifdef BASE_CHECK
-	/*String str1(5);
-	str1.Print();*/
+	String str(5);
+	str.Print();
 
 	String str1 = "Hello";		//"Hello" - строковая константа
 	str1 = str1;				//"Hello" самоуничтожилось 
@@ -152,6 +153,8 @@ void main()
 
 	String str4 = str3;			//Copy constructor
 #endif
+	
+#ifdef CALLING_CONSTRUCTORS
 
 	String str1;				//Default C-R
 	String str2 = "Hello";		//1Arg C-R
@@ -161,4 +164,5 @@ void main()
 	String str6{ 22 };
 	String str7{ "World" };
 	String str8{ str7 };
+#endif
 }
